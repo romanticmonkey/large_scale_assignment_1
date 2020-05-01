@@ -37,7 +37,7 @@ def simulation():
     z_mat_all = None
     if rank == 0:
         z_mat_all = np.empty([T, S*size], dtype='float')
-    comm.Gather(sendbuf = z_mat, recvbuff = z_mat_all, root=0)
+    comm.Gather(sendbuf = z_mat, recvbuf = z_mat_all, root=0)
 
     if rank == 0: 
         time_elapsed = time.time() - t0
