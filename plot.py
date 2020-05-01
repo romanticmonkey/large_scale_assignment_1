@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import sys
+import numpy as np
 
 
 def plot_csv(csv_filename):
@@ -8,8 +9,8 @@ def plot_csv(csv_filename):
 
     df.plot(x='cores', y='run_time')
     plt.ylabel('time (s)')
-    plt.title('Program Running Time (s) From 1 to 100 Cores')
-
+    plt.title('Program Running Time (s) From 1 to 20 Cores')
+    plt.xticks(np.arange(1,21))
     plt.savefig(f'{csv_filename[:-4]}_plot.png')
 
 

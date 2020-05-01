@@ -2,13 +2,13 @@
 
 #SBATCH --job-name=q1
 #SBATCH --output=q1.out
-#SBATCH --ntasks=4
+#SBATCH --ntasks=10
 #SBATCH --partition=broadwl
 #SBATCH --constraint=fdr
 
 module load mpi4py/3.0.1a0_py3
 
-for i in {1..4}
+for i in {1..10}
 do
   mpirun -n $i python ./q1.py &
 done

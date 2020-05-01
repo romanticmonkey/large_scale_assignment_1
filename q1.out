@@ -1,4 +1,16 @@
-  File "./plot.py", line 12
-    plt.legend(["time taken to run (s)")
-                                       ^
-SyntaxError: invalid syntax
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Step created for job 790685
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Job 790685 step creation temporarily disabled, retrying
+srun: Step created for job 790685
+srun: Step created for job 790685
+srun: Step created for job 790685
+srun: Step created for job 790685
+srun: Step created for job 790685
+srun: Step created for job 790685
+srun: Step created for job 790685
