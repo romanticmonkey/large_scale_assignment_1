@@ -1,0 +1,4 @@
+  File "./plot.py", line 12
+    plt.legend(["time taken to run (s)")
+                                       ^
+SyntaxError: invalid syntax

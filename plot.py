@@ -4,9 +4,10 @@ import sys
 
 
 def plot_csv(csv_filename):
-    df = pd.read_csv(csv_filename, names=['cores', 'time'])
+    df = pd.read_csv(csv_filename, names=['cores', 'run_time'])
 
-    df.plot(x='cores', y='time')
+    df.plot(x='cores', y='run_time')
+    plt.ylabel('time (s)')
     plt.title('Program Running Time (s) From 1 to 100 Cores')
 
     plt.savefig(f'{csv_filename[:-4]}_plot.png')
