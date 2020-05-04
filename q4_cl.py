@@ -6,12 +6,30 @@ import pyopencl.tools as cltools
 from pyopencl.scan import GenericScanKernel
 import matplotlib.pyplot as plt
 import time
+import pandas as pd
+from scipy.optimize import minimize
 
-def sim_lifetime(S, T):
+def avg_first_negative(matrix):
+    neg_tracker = np.array([])
+    row_count = matrix.shape[0]
+    col_count = matrix.shape[1]
+
+    for i in range(row_count):
+        for j in range(col_count):
+          if matrix[i, j] <= 0:
+              neg_tracker = np.append(neg_tracker, j)
+              break
+    
+    return neg_tracker.mean()
+
+def sim_lifetime(rho):
     ctx = cl.create_some_context()
     queue = cl.CommandQueue(ctx)
 
     t0 = time.time()
+
+    S = 1000
+    T = int(4160)
 
     rand_gen = clrand.PhiloxGenerator(ctx, seed=25)
     eps_mat = rand_gen.normal(queue, (S*T), np.float32, mu=0, sigma=1)
@@ -27,37 +45,38 @@ def sim_lifetime(S, T):
     
     prefix_sum = GenericScanKernel(ctx, np.float32,
                 arguments="__global float *ary, __global char *segflags, "
-                    "__global float *eps, __global float *out",
-                input_expr="ary[i] + eps[i] + 3*(1-0.5)",
-                scan_expr="across_seg_boundary ? b : (0.5*a+b)", neutral="0",
+                    "__global float *eps, __global float *out, __global float r",
+                input_expr="ary[i] + eps[i] + 3*(1-r)",
+                scan_expr="across_seg_boundary ? b : (r*a+b)", neutral="0",
                 is_segment_start_expr="segflags[i]",
                 output_statement="out[i] = item",
                 options=[])
 
     dev_result = cl_array.empty_like(eps_mat)
 
-    prefix_sum(z_mat, seg_boundary_flags, eps_mat, dev_result)
+    prefix_sum(z_mat, seg_boundary_flags, eps_mat, dev_result, rho)
 
     simulation_all = (dev_result.get()
-                         .reshape(S, T)
-                         .transpose()
+                         .reshape(S, T).transpose()
                          )
-
-    average_finish = np.mean(simulation_all[-1])
-    std_finish = np.std(simulation_all[-1])
-    final_time = time.time()
-    time_elapsed = final_time - t0
-
-    print("Simulated %d lifetimes in: %f seconds"
-                % (S, time_elapsed))
-    print("Average final health score: %f, Standard Deviation: %f"
-                % (average_finish, std_finish))
+    
+    avg_first_neg = avg_first_negative(simulation_all)
    
-    return
+    return -avg_first_neg # turned negative for minimization
+
+def optimize():
+    x0 = [0.1]
+    res = minimize(sim_lifetime, x0, method='Nelder-Mead')
+
+    print('Optimized rho: {}'.format(res.x[0]))
+    print('Max Value: {}'.format(res.fun))
 
 def main():
-    sim_lifetime(1000, int(4160))
-
+    t0 = time.time()
+    optimize()
+    time_elapsed = time.time() - t0
+    print('Time taken: {}'.format(time_elapsed))
 
 if __name__ == '__main__':
     main()
+
