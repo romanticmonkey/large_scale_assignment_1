@@ -39,7 +39,7 @@ def simulation(rho):
         tracker_all = np.empty([S*size], dtype='float')
     comm.Gather(sendbuf = tracker, recvbuf = tracker_all, root=0)
 
-    return tracker_all.mean()
+    return -tracker_all.mean()
 
 def main():
 

@@ -1,2 +1,0 @@
-./q4_mpi.py:30: RuntimeWarning: overflow encountered in multiply
-  z_t = rho * z_tm1 + (1 - rho) * mu + e_t
